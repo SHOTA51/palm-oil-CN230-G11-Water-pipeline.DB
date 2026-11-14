@@ -1,5 +1,5 @@
 
-USE plam-oil;
+USE `plam-oil`;
 
 -- 1. Province staging
 CREATE TABLE stg_province (

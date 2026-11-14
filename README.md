@@ -1,104 +1,93 @@
-# palm-oil-CN230-G11-Water-pipeline.DB
+# Palm Oil Dashboard Data Preparation (MySQL 8.4)
 
-สำหรับรัน SQL
+คู่มือนี้เป็นลำดับหลักสำหรับเตรียมข้อมูลจาก CSV ให้พร้อมใช้ในเว็บ Dashboard โดยใช้ MySQL ตาม `DATA_SET/docker-compose.yaml` ตาราง `stg_*` เป็น staging เพิ่มเติม ส่วนตารางอื่นเป็น star schema ตาม ERD
 
-docker compose -f .\DATA_SET\docker-compose.yaml up -d    
-docker ps         
-docker exec -it plam-oil bash                  
-mysql -p
+## สถานะฐานข้อมูลปัจจุบัน
 
-------------------------------
-1. 
-SOURCE /docker-entrypoint-initdb.d/01_create_tables.sql;
+ตรวจจาก container `plam-oil` เมื่อ 14 พ.ย. 2026 พบตารางครบ 9 ตาราง:
 
-#check
-USE plam-oil;
-SHOW TABLES;
+| กลุ่ม | ตาราง | จำนวนปัจจุบัน |
+|---|---|---:|
+| Dimension | `locations`, `commodities`, `items`, `units`, `data_releases` | 81, 1, 4, 3, 9 |
+| Fact | `production_stats` | 6,960 |
+| Staging | `stg_province`, `stg_region`, `stg_country` | 6,308, 480, 172 |
 
-------------------------------
-2. ทำไมต้องสร้าง Staging 3 ตาราง?
-เพราะเราต้องการเก็บข้อมูลดิบแยกตามระดับพื้นที่ เพื่อป้องกันการนำข้อมูลระดับจังหวัด ภาค และประเทศมาปะปนกัน
+การตรวจแบบอ่านอย่างเดียวพบ fact ไม่มี `release_id` ว่างและไม่พบ grain ซ้ำตาม unique key ที่กำหนด ข้อมูลในฐานที่กำลังรันยังไม่ได้ถูกลบหรือโหลดซ้ำ
 
-3 ตารางที่เราเพิ่งสร้างเพิ่ม ได้แก่
-- stg_province
-- stg_region
-- stg_country
-ทั้ง 3 ตารางนี้ไม่มีอยู่ใน ERD 
-แต่ผมตั้งใจเพิ่มเข้ามาเพื่อเป็นพื้นที่พักข้อมูลก่อนนำเข้าสู่ Database หลัก
+## ลำดับทำงาน
 
-SOURCE /docker-entrypoint-initdb.d/02_create_staging.sql;
+1. เตรียม CSV จาก workbook หากจำเป็น:
 
-#check
-USE plam-oil;
-SHOW TABLES;
+   ```powershell
+   cd DATA_SET
+   python convert_to_csv.py
+   ```
 
-------------------------------
-3. python -m pip install pandas openpyxl
+2. เริ่ม MySQL (volume เดิมจะถูกรักษาไว้):
 
-cd .\DATA_SET
-python convert_to_csv.py
+   ```powershell
+   docker compose -f .\DATA_SET\docker-compose.yaml up -d
+   docker ps
+   ```
 
-check
-ls -l /data/csv/
+3. เปิด MySQL client ใน container:
 
-------------------------------
+   ```powershell
+   docker exec -it plam-oil mysql --local-infile=1 -uroot -p
+   ```
 
-mysql --local-infile=1 -p
+   ใส่รหัสผ่านตาม `DATA_SET/docker-compose.yaml` ในฐานที่มีตารางแล้ว ให้ข้ามขั้นสร้างตาราง `01` และ `02` แล้วนำเข้า CSV ใหม่ได้เลย หากเป็นฐานว่างให้รัน `01` และ `02` ก่อน จากนั้นรัน:
 
-------------------------------
-SHOW VARIABLES LIKE 'local_infile';
-if off
-SET GLOBAL local_infile = ON;
+   ```sql
+   SOURCE /docker-entrypoint-initdb.d/01_create_tables.sql;
+   SOURCE /docker-entrypoint-initdb.d/02_create_staging.sql;
+   SOURCE /docker-entrypoint-initdb.d/03_import_Region_Province.sql;
+   SOURCE /docker-entrypoint-initdb.d/04_import_country.sql;
+   ```
 
-4. 
-SOURCE /docker-entrypoint-initdb.d/03_import_Region_Province.sql;
-SOURCE /docker-entrypoint-initdb.d/04_import_country.sql;
+   Import scripts จะล้างเฉพาะ staging table ที่เกี่ยวข้องก่อนนำเข้าใหม่ เพื่อไม่ให้การนำเข้าซ้ำเพิ่มแถวซ้ำ
 
-check
+4. ตรวจจำนวนแถว staging ก่อนโหลดมิติและ fact:
 
-SELECT 'Province' AS dataset, COUNT(*) AS total
-FROM stg_province
+   ```sql
+   SELECT 'province' dataset, COUNT(*) total FROM stg_province
+   UNION ALL SELECT 'region', COUNT(*) FROM stg_region
+   UNION ALL SELECT 'country', COUNT(*) FROM stg_country;
+   ```
 
-UNION ALL
+   ค่าที่คาดหวังจาก CSV ปัจจุบันคือ 6,308 / 480 / 172 ตามลำดับ หากไม่ตรง ให้หยุดตรวจการนำเข้าก่อน
 
-SELECT 'Region', COUNT(*)
-FROM stg_region
+5. รัน validation ก่อนโหลด โดยตรวจว่าไม่มีฟิลด์บังคับว่าง ปีไม่ตรงกัน หรือตัวเลขผิดรูปแบบ:
 
-UNION ALL
+   ```sql
+   SOURCE /docker-entrypoint-initdb.d/05_staging_validation.sql;
+   ```
 
-SELECT 'Country', COUNT(*)
-FROM stg_country;
+6. โหลด dimensions และตำแหน่งตามลำดับ:
 
-if
-+----------+-------+
-| dataset  | total |
-+----------+-------+
-| Province |  6308 |
-| Region   |   480 |
-| Country  |   172 |
-+----------+-------+
-currect
-and check
+   ```sql
+   SOURCE /docker-entrypoint-initdb.d/07_02_load_dimensions.sql;
+   SOURCE /docker-entrypoint-initdb.d/07_03_load_locations.sql;
+   ```
 
-DESCRIBE stg_province;
-DESCRIBE stg_region;
-DESCRIBE stg_country;
-------------------------------
-5. Data Validation
-SOURCE /docker-entrypoint-initdb.d/05_Data Validation.sql;
+   วันที่ `16 ตุลาคม 2568` ถูกแปลงเป็น `2025-10-16` แล้ว อย่าลบรันแก้ label ใน `07_03` เพราะชื่อไทยใน source เป็นข้อมูลที่ใช้จับคู่กับ fact
 
-------------------------------
-6. Data Validation
-SOURCE /docker-entrypoint-initdb.d/06_data_profiling.sql;
+7. โหลด fact และตรวจผล:
 
-SOURCE /docker-entrypoint-initdb.d/06_2_item_analysis.sql;
+   ```sql
+   SOURCE /docker-entrypoint-initdb.d/08_01_load_production_stats.sql;
+   SOURCE /docker-entrypoint-initdb.d/09_01_data_quality_checks.sql;
+   ```
 
-------------------------------
-7. Dimension Tables
-SOURCE /docker-entrypoint-initdb.d/07_02_create_dimensions.sql;
+   จำนวน fact ที่คาดหวังคือ 6,960 แถว สคริปต์โหลด fact รองรับการรันซ้ำโดยอัปเดตแถวที่ชน `uq_stats` ซึ่งหมายถึงเก็บค่าปัจจุบันต่อพื้นที่/สินค้า/ตัวชี้วัด/ปีเพาะปลูก หากต้องเก็บข้อมูลหลาย release ของ grain เดียวกัน ต้องปรับ unique key และนโยบาย versioning ก่อน
 
-SOURCE /docker-entrypoint-initdb.d/10_data_audit.sql;
+## ไฟล์ SQL
 
-SOURCE /docker-entrypoint-initdb.d/11_zero_and_coverage_audit.sql
+- **ชุดทำงานหลัก:** `01`, `02`, `03`, `04`, `05_staging_validation`, `07_02`, `07_03`, `08_01`, `09_01`
+- **ตรวจ business logic เพิ่มเติม (อ่านอย่างเดียว):** `10_business_logic_validation.sql`
 
-SOURCE /docker-entrypoint-initdb.d/12_business_logic_validation.sql
+ไฟล์ตรวจสอบที่ซ้ำกันถูกรวมเป็น `05_staging_validation.sql` และ `09_01_data_quality_checks.sql` แล้ว ส่วน `10_business_logic_validation.sql` เก็บไว้สำหรับตรวจความสมเหตุสมผลของหน่วยและอัตราผลผลิตก่อนทำ KPI
+
+## เตรียมต่อสำหรับเว็บ
+
+ฐานข้อมูลมี hierarchy พื้นที่สำหรับ drill-down และคอลัมน์ `name_en` สำหรับค้นหาภาษาอังกฤษ (ปัจจุบันยังไม่มีการเติมชื่ออังกฤษ) ขั้นถัดไปคือกำหนด query/view ตามตัวกรอง Dashboard ที่ต้องการ และเพิ่ม index จากรูปแบบการค้นหาจริงของเว็บ โดยยังไม่ควรสร้างสรุปที่บวกจังหวัด ภาค และประเทศรวมกัน เพราะเป็นระดับข้อมูลซ้อนกัน

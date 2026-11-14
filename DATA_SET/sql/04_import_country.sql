@@ -1,4 +1,9 @@
 
+USE `plam-oil`;
+
+-- Replace staging contents so rerunning the import does not duplicate rows.
+TRUNCATE TABLE stg_country;
+
 LOAD DATA LOCAL INFILE '/data/csv/oil_palm_country.csv'
 INTO TABLE stg_country
 CHARACTER SET utf8mb4

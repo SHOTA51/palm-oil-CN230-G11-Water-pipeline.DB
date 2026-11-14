@@ -1,21 +1,20 @@
 -- ============================================================
--- STEP 12: BUSINESS LOGIC VALIDATION
+-- STEP 10: BUSINESS LOGIC VALIDATION
 -- Project: Oil Palm Production Dashboard
--- Dialect: mostly portable SQL (suitable for MySQL 8+; review enum handling for PostgreSQL)
+-- Dialect: MySQL 8.4
 -- Source of truth: _DBML_dbdiagram.io.txt (1 fact + 5 dimensions)
 --
 -- IMPORTANT:
 --   * Read-only audit queries only; this script does not INSERT,
 --     UPDATE, DELETE, ALTER, or DROP anything.
---   * Run after Step 11 has completed.
+--   * Run after Step 9 has completed.
 --   * Review actual item/unit labels before interpreting yield ratios.
 -- ============================================================
 
--- Select your project database in the SQL client before running this script.
--- Example only: USE your_actual_database_name;
+USE `plam-oil`;
 
 -- ------------------------------------------------------------
--- 12.1 Confirm the ERD tables and their row counts
+-- 10.1 Confirm the ERD tables and their row counts
 -- ------------------------------------------------------------
 SELECT 'locations' AS table_name, COUNT(*) AS row_count FROM locations
 UNION ALL
@@ -31,7 +30,7 @@ SELECT 'production_stats', COUNT(*) FROM production_stats;
 
 
 -- ------------------------------------------------------------
--- 12.2 Review item-to-unit mapping (important before KPI formulas)
+-- 10.2 Review item-to-unit mapping (important before KPI formulas)
 -- ------------------------------------------------------------
 SELECT
     i.item_id,
@@ -45,7 +44,7 @@ ORDER BY i.item_id;
 
 
 -- ------------------------------------------------------------
--- 12.3 Check NULL values in the fact table
+-- 10.3 Check NULL values in the fact table
 -- value and release_id are nullable in the ERD; this query reports
 -- them for review rather than assuming every NULL is a constraint error.
 -- ------------------------------------------------------------
@@ -60,7 +59,7 @@ FROM production_stats;
 
 
 -- ------------------------------------------------------------
--- 12.4 Check negative and zero values by indicator
+-- 10.4 Check negative and zero values by indicator
 -- Negative values should be investigated.
 -- Zero values are reported separately and are not automatically errors.
 -- ------------------------------------------------------------
@@ -82,7 +81,7 @@ ORDER BY i.item_name;
 
 
 -- ------------------------------------------------------------
--- 12.5 Check duplicate business keys from the ERD
+-- 10.5 Check duplicate business keys from the ERD
 -- Expected result: no rows.
 -- ERD unique key: location_id + commodity_id + item_id + crop_year
 -- ------------------------------------------------------------
@@ -102,7 +101,7 @@ HAVING COUNT(*) > 1;
 
 
 -- ------------------------------------------------------------
--- 12.6 Validate the location hierarchy
+-- 10.6 Validate the location hierarchy
 -- Expected structure:
 --   country  -> parent_id IS NULL
 --   region   -> parent is country
@@ -129,7 +128,7 @@ ORDER BY child.level, child.location_id;
 
 
 -- ------------------------------------------------------------
--- 12.7 Check location counts by hierarchy level
+-- 10.7 Check location counts by hierarchy level
 -- ------------------------------------------------------------
 SELECT
     level,
@@ -146,7 +145,7 @@ END;
 
 
 -- ------------------------------------------------------------
--- 12.8 Check fact-table coverage by crop year, location level, and item
+-- 10.8 Check fact-table coverage by crop year, location level, and item
 -- ------------------------------------------------------------
 SELECT
     p.crop_year,
@@ -181,7 +180,7 @@ ORDER BY
 
 
 -- ------------------------------------------------------------
--- 12.9 Review release-date coverage
+-- 10.9 Review release-date coverage
 -- release_id is nullable in the ERD, so missing releases are reported.
 -- ------------------------------------------------------------
 SELECT
@@ -204,7 +203,7 @@ ORDER BY p.crop_year, d.data_date;
 
 
 -- ------------------------------------------------------------
--- 12.10 Compare reported production/area indicators with a raw ratio
+-- 10.10 Compare reported production/area indicators with a raw ratio
 -- This is a diagnostic only. Do NOT treat it as a pass/fail test until
 -- the units and conversion convention in the source data are confirmed.
 -- The ERD lists units such as rai, ton, and kilogram per rai.
@@ -254,7 +253,7 @@ ORDER BY p.crop_year, l.name_th, c.commodity_name;
 
 
 -- ------------------------------------------------------------
--- 12.11 Check for facts whose release_id does not match a release row
+-- 10.11 Check for facts whose release_id does not match a release row
 -- Expected result: no rows. NULL release_id values are excluded.
 -- ------------------------------------------------------------
 SELECT
@@ -268,10 +267,11 @@ WHERE p.release_id IS NOT NULL
 
 
 -- ============================================================
--- END OF STEP 12
+-- END OF STEP 10
 --
 -- Save query outputs/screenshots for the audit record.
 -- Resolve any unexpected findings before creating Step 13 views.
 -- Do not change the ERD or infer unit conversions without checking
 -- the source workbook/data dictionary.
 -- ============================================================
+

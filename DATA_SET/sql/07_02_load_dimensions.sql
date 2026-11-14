@@ -1,66 +1,7 @@
 SET NAMES utf8mb4;
 USE `plam-oil`;
 
--- ==========================================
--- STEP 7.2 : CREATE DIMENSION TABLES
--- MySQL 8.4
--- ==========================================
-
--- 1. Locations
-CREATE TABLE IF NOT EXISTS locations (
-    location_id INT AUTO_INCREMENT PRIMARY KEY,
-    name_th VARCHAR(100) NOT NULL,
-    name_en VARCHAR(100) NULL,
-    level ENUM('country', 'region', 'province') NOT NULL,
-    parent_id INT NULL,
-
-    INDEX idx_loc_name_th (name_th),
-    INDEX idx_loc_name_en (name_en),
-    INDEX idx_loc_level_parent (level, parent_id),
-
-    CONSTRAINT fk_locations_parent
-        FOREIGN KEY (parent_id)
-        REFERENCES locations(location_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
--- 2. Commodities
-CREATE TABLE IF NOT EXISTS commodities (
-    commodity_id INT AUTO_INCREMENT PRIMARY KEY,
-    commodity_name VARCHAR(100) NOT NULL,
-    subcom_name VARCHAR(100) NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
--- 3. Units
-CREATE TABLE IF NOT EXISTS units (
-    unit_id INT AUTO_INCREMENT PRIMARY KEY,
-    unit_name VARCHAR(50) NOT NULL UNIQUE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
--- 4. Items
-CREATE TABLE IF NOT EXISTS items (
-    item_id INT AUTO_INCREMENT PRIMARY KEY,
-    item_name VARCHAR(100) NOT NULL UNIQUE,
-    unit_id INT NOT NULL,
-
-    CONSTRAINT fk_items_unit
-        FOREIGN KEY (unit_id)
-        REFERENCES units(unit_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
--- 5. Data Releases
-CREATE TABLE IF NOT EXISTS data_releases (
-    release_id INT AUTO_INCREMENT PRIMARY KEY,
-    data_date DATE NOT NULL UNIQUE,
-    data_date_th VARCHAR(50) NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
--- ==========================================
--- STEP 7.3 : LOAD COMMODITIES
+-- STEP 7.2 : LOAD DIMENSIONS
 -- ==========================================
 
 INSERT INTO commodities (commodity_name, subcom_name)
@@ -129,7 +70,7 @@ FROM (
         CASE raw_dates.normalized_date
             WHEN '1 พฤศจิกายน 2566' THEN '2023-11-01'
             WHEN '13 มิถุนายน 2557' THEN '2014-06-13'
-            WHEN '16 กุมภาพันธ์ 2568' THEN '2025-02-16'
+            WHEN '16 ตุลาคม 2568' THEN '2025-10-16'
             WHEN '23 กันยายน 2552' THEN '2009-09-23'
             WHEN '27 มกราคม 2559' THEN '2016-01-27'
             WHEN '29 ธันวาคม 2553' THEN '2010-12-29'

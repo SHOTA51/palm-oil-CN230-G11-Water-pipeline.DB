@@ -107,7 +107,16 @@ JOIN items AS i
   ON i.item_name = s.item_name
  AND i.unit_id = u.unit_id
 JOIN data_releases AS dr
-  ON TRIM(dr.data_date_th) = TRIM(s.data_date_th);
+  ON TRIM(dr.data_date_th) = TRIM(s.data_date_th)
+ON DUPLICATE KEY UPDATE
+    release_id = VALUES(release_id),
+    year = VALUES(year),
+    crop_year = VALUES(crop_year),
+    value = VALUES(value);
+
+-- A repeated load updates the current value for uq_stats instead of failing
+-- on duplicate keys. Historical publication vintages require release_id to
+-- be part of the unique key and a separate versioning policy.
 
 -- Expected: 6,960 fact rows if the target table was empty before loading.
 SELECT COUNT(*) AS production_stats_rows

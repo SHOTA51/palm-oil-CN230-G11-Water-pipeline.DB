@@ -1,5 +1,9 @@
 
-USE plam-oil;
+USE `plam-oil`;
+
+-- Replace staging contents so rerunning the import does not duplicate rows.
+TRUNCATE TABLE stg_province;
+TRUNCATE TABLE stg_region;
 
 -- Import Province
 LOAD DATA LOCAL INFILE '/data/csv/oil_palm_province.csv'

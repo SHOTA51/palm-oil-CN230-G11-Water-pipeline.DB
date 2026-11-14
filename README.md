@@ -2,7 +2,7 @@
 
 คู่มือนี้เป็นลำดับหลักสำหรับเตรียมข้อมูลจาก CSV ให้พร้อมใช้ในเว็บ Dashboard โดยใช้ MySQL ตาม `DATA_SET/docker-compose.yaml` ตาราง `stg_*` เป็น staging เพิ่มเติม ส่วนตารางอื่นเป็น star schema ตาม ERD
 
-## ใน dataset/csv วิธี import เข้าจาก csv โดยตรงไม่จำเป็นต้องเป็น SQL
+## ใน dataset มีวิธี import เข้าจาก csv โดยตรงไม่จำเป็นต้องเป็น SQL
 
 ## สถานะฐานข้อมูลปัจจุบัน
 

@@ -78,5 +78,25 @@ if
 | Country  |   172 |
 +----------+-------+
 currect
+and check
+
+DESCRIBE stg_province;
+DESCRIBE stg_region;
+DESCRIBE stg_country;
+------------------------------
+5. Data Validation
+SOURCE /docker-entrypoint-initdb.d/05_Data Validation.sql;
 
 ------------------------------
+6. Data Validation
+SOURCE /docker-entrypoint-initdb.d/06_data_profiling.sql;
+
+SOURCE /docker-entrypoint-initdb.d/06_2_item_analysis.sql;
+
+------------------------------
+7. Dimension Tables
+SOURCE /docker-entrypoint-initdb.d/07_02_create_dimensions.sql;
+
+SOURCE /docker-entrypoint-initdb.d/10_data_audit.sql;
+
+SOURCE /docker-entrypoint-initdb.d/11_zero_and_coverage_audit.sql

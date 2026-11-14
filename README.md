@@ -100,3 +100,5 @@ SOURCE /docker-entrypoint-initdb.d/07_02_create_dimensions.sql;
 SOURCE /docker-entrypoint-initdb.d/10_data_audit.sql;
 
 SOURCE /docker-entrypoint-initdb.d/11_zero_and_coverage_audit.sql
+
+SOURCE /docker-entrypoint-initdb.d/12_business_logic_validation.sql

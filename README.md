@@ -37,3 +37,46 @@ SHOW TABLES;
 
 cd .\DATA_SET
 python convert_to_csv.py
+
+check
+ls -l /data/csv/
+
+------------------------------
+
+mysql --local-infile=1 -p
+
+------------------------------
+SHOW VARIABLES LIKE 'local_infile';
+if off
+SET GLOBAL local_infile = ON;
+
+4. 
+SOURCE /docker-entrypoint-initdb.d/03_import_Region_Province.sql;
+SOURCE /docker-entrypoint-initdb.d/04_import_country.sql;
+
+check
+
+SELECT 'Province' AS dataset, COUNT(*) AS total
+FROM stg_province
+
+UNION ALL
+
+SELECT 'Region', COUNT(*)
+FROM stg_region
+
+UNION ALL
+
+SELECT 'Country', COUNT(*)
+FROM stg_country;
+
+if
++----------+-------+
+| dataset  | total |
++----------+-------+
+| Province |  6308 |
+| Region   |   480 |
+| Country  |   172 |
++----------+-------+
+currect
+
+------------------------------

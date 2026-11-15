@@ -1,0 +1,38 @@
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: root_dev_only
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    ports:
+      - "3307:3306"   # host 3307 (3306 is often taken by a local MySQL or the team's plam-oil container)
+    volumes:
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./db/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+      - ./db/dev-user.sql:/docker-entrypoint-initdb.d/03-dev-user.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-proot_dev_only"]
+      interval: 3s
+      timeout: 3s
+      retries: 60
+
+  api:
+    build: ./backend
+    environment:
+      DATABASE_URL: mysql+pymysql://dashboard_app:dashboard_app_pw@db:3306/plam-oil
+      ALLOWED_ORIGINS: http://localhost:3000
+      # Read from the project-root .env (gitignored). Leave empty to run keyword-only search.
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_EMBED_MODEL: ${GEMINI_EMBED_MODEL:-gemini-embedding-001}
+      GEMINI_CHAT_MODEL: ${GEMINI_CHAT_MODEL:-gemini-3.6-flash,gemini-3.5-flash,gemini-3.1-flash-lite}
+      RAG_INDEX_PATH: /srv/data/rag_index.npz
+    volumes:
+      - rag_data:/srv/data   # cached embeddings survive restarts
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  rag_data:

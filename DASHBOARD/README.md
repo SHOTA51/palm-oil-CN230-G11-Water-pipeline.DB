@@ -11,8 +11,6 @@
 frontend/  Next.js 16: หน้าแดชบอร์ดภาษาไทย
 backend/   FastAPI: SQL ของแดชบอร์ด + ค้นหาเชิงความหมาย/RAG ด้วย Gemini
 db/        schema.sql + seed.sql ของฐานข้อมูล plam-oil (สร้างจาก db/csv ด้วย build_seed.py)
-Manual/    คู่มือการใช้งานและคำอธิบายระบบ (เริ่มที่ Manual/README.md)
-archive/   โค้ดสไลด์ normalization เดิม (ไม่ได้ใช้แล้ว)
 ```
 
 ## เริ่มใช้งาน
@@ -24,5 +22,3 @@ cd frontend
 npm install
 npm run dev                         # http://localhost:3000
 ```
-
-อ่านต่อใน [Manual/README.md](Manual/README.md)

@@ -2,7 +2,7 @@
 
 ```powershell
 npm install
-npm run dev        # http://localhost:3000 (ต้องเปิด API ที่ NEXT_PUBLIC_API_URL ก่อน ดู ../Manual/how-to-run.md)
+npm run dev        # http://localhost:3000 (ต้องเปิด API ที่ NEXT_PUBLIC_API_URL ก่อน ดู ../README.md)
 npm run build      # build สำหรับ production
 npm run lint
 ```

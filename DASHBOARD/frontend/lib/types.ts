@@ -97,4 +97,10 @@ export interface RagStatus {
   chatModels?: string[];
   geminiConfigured: boolean;
   error: string | null;
+  neo4j?: {
+    configured: boolean;
+    ready: boolean;
+    index: string | null;
+    error: string | null;
+  };
 }

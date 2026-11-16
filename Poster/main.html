@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ระบบฐานข้อมูลปริมาณการผลิตปาล์มน้ำมัน — Poster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1f2a44;--mut:#6b7488;--line:#e6e9f1;--bg:#eef0f6;--pass:#12905c;--warn:#d9730d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 "Noto Sans Thai",Tahoma,Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.sheet{width:1400px;margin:24px auto;display:flex;flex-direction:column;background:#f8f9fc;border-radius:26px;padding:26px;box-shadow:0 14px 44px #27324a1f}
+.hero{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:24px 30px;border-radius:18px;color:#fff;background:linear-gradient(100deg,#0f5a32 0%,#1f8a3c 55%,#c58b0e 100%)}
+.hero h1{margin:0 0 4px;font-size:30px;line-height:1.3;font-weight:800}
+.hero p{margin:0;font-size:14px;opacity:.95}
+.tag{flex:none;text-align:center;padding:10px 18px;border-radius:12px;background:#ffffff26;border:1px solid #ffffff55;font-weight:600;font-size:14px;line-height:1.6}
+.cols{display:grid;grid-template-columns:1fr .95fr 1.25fr;gap:18px;margin-top:18px;flex:1}
+.col{display:flex;flex-direction:column;gap:18px;min-width:0}.col>.blk:last-child{flex:1}
+.blk{--c:#6d3fe0;margin:0;background:#fff;border-radius:18px;border-left:5px solid var(--c);padding:18px 20px;box-shadow:0 3px 12px #28345310;break-inside:avoid}
+.blk h2{margin:0 0 12px;display:flex;align-items:center;gap:10px;font-size:19px;font-weight:800}
+.n{flex:none;width:32px;height:32px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-size:15px}
+p{margin:0 0 8px}ul{margin:6px 0 8px;padding-left:20px}
+.sm{font-size:12px;color:var(--mut);line-height:1.6}
+b,strong{font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0 8px}
+th{background:#f1f3f9;text-align:left;padding:8px 10px;font-weight:700}
+td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.r{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ok{color:var(--pass);font-weight:700}.rv{color:var(--warn);font-weight:700}.pd{color:#7a8299;font-weight:700}
+.mono{font-family:Consolas,"Courier New",monospace}
+pre{margin:8px 0 10px;padding:16px 18px;background:#10182e;color:#e3e8f5;border-radius:12px;font:11.5px/1.65 Consolas,"Courier New",monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+.k{color:#8ab4ff}.s{color:#7ee0a0}.v{color:#ffcf6b}.c{color:#7a86a6}
+.er{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:10px}
+.e{grid-column:span 3;border:1px solid #d9deeb;border-radius:11px;padding:10px 12px;font-size:12px;line-height:1.55;background:#fafbfe}
+.e.w{grid-column:span 6}.e.f{grid-column:span 6;background:#fff3cf;border-color:#efd88a}
+.e strong{display:block;font-size:14px;margin-bottom:2px}
+.pk{color:#d93025;font-weight:700}.fk{color:#2557d6;font-weight:700}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-bottom:10px}
+.chip{background:#e3f6ea;color:#14633a;font-weight:600;font-size:12.5px;padding:4px 11px;border-radius:999px}
+.ar{color:#9aa3b8}
+.cal{padding:10px 12px;border-radius:10px;background:#eaf7f0;border:1px solid #cfeadb;font-size:12.5px;margin:8px 0}
+.cal.w{background:#fff5e5;border-color:#f1dbb4;color:#7e4e12}
+.tg{display:inline-block;background:#efeaff;color:#5b3fc0;font-weight:700;font-size:12px;padding:2px 9px;border-radius:6px;margin-bottom:8px}
+.res{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.res div{background:#f5f4ff;border-radius:10px;padding:10px 12px}
+.res strong{display:block;font-size:19px;color:#6d3fe0;line-height:1.3}
+.res span{font-size:12px;color:var(--mut)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.stats div{background:#fdeaf2;border-radius:12px;text-align:center;padding:12px 6px}
+.stats strong{display:block;font-size:18px;color:#d6246e;line-height:1.3}
+.stats span{font-size:11.5px;color:var(--mut)}
+.foot{margin-top:auto;padding-top:18px;text-align:center;font-size:12px;color:var(--mut)}
+@media print{html,body{background:#fff;margin:0}.sheet{zoom:1!important;margin:0;box-shadow:none;border-radius:0}}
+</style>
+</head>
+<body>
+<main class="sheet">
+<header class="hero">
+  <div>
+    <h1>ระบบฐานข้อมูลปริมาณการผลิตปาล์มน้ำมัน</h1>
+    <p>Palm Oil Production Database &amp; Dashboard · ประเทศ → ภาค → จังหวัด · ปีเพาะปลูก พ.ศ. 2525–2567</p>
+  </div>
+  <div class="tag">CN230 · Database Systems<br>SRS G11_W14_A4_M3 · 8 Blocks</div>
+</header>
+
+<div class="cols">
+<div class="col">
+<section class="blk" style="--c:#6d3fe0">
+  <h2><span class="n">1</span>Problem &amp; Objectives</h2>
+  <p>ข้อมูลปาล์มน้ำมันต้องเชื่อมโยงหลายปี หลายตัวชี้วัด และหลายระดับพื้นที่ เพื่อเปรียบเทียบและตรวจสอบแหล่งที่มาได้อย่างเป็นระบบ</p>
+  <ul>
+    <li>จัดเก็บข้อมูลประเทศ ภาค และจังหวัดในฐานข้อมูลเดียว (1 ประเทศ · 4 ภาค · 76 จังหวัด)</li>
+    <li>แสดงแนวโน้มพื้นที่ยืนต้น พื้นที่ให้ผล ผลผลิต และ Yield</li>
+    <li>จัดอันดับพื้นที่ พร้อมค่าปีก่อนและสัดส่วนต่อประเทศ</li>
+    <li>เชื่อมระเบียนกับวันที่เผยแพร่ผ่าน release_id</li>
+    <li>ตรวจคุณภาพข้อมูล โดยแยกค่า 0 ออกจากข้อมูลที่ขาดหาย</li>
+  </ul>
+  <p class="sm">ขอบเขตที่มีโค้ดรองรับ: meta(), trend(), ranking(), regions() ใช้คำสั่งอ่านข้อมูลและ bind parameters · SRS ครอบคลุมการนำเข้า ตรวจสอบ ส่งออก และ Drill-down แต่โค้ดที่แนบยังไม่ยืนยันว่าทำงานครบ</p>
+</section>
+
+<section class="blk" style="--c:#0e8fa6">
+  <h2><span class="n">2</span>Data Sources (SRC-xx)</h2>
+  <table>
+    <tr><th>รหัส</th><th>ไฟล์ข้อมูล</th><th class="r">แถว</th></tr>
+    <tr><td>SRC-01</td><td>locations.csv</td><td class="r">81</td></tr>
+    <tr><td>SRC-02</td><td>commodities.csv</td><td class="r">1</td></tr>
+    <tr><td>SRC-03</td><td>units.csv</td><td class="r">3</td></tr>
+    <tr><td>SRC-04</td><td>items.csv</td><td class="r">4</td></tr>
+    <tr><td>SRC-05</td><td>data_releases.csv</td><td class="r">9</td></tr>
+    <tr><td>SRC-06</td><td>production_stats.csv</td><td class="r">6,960</td></tr>
+  </table>
+  <p class="sm">สินค้า: ปาล์มน้ำมัน · หน่วย: ไร่ ตัน กิโลกรัมต่อไร่ · ช่วงปีเพาะปลูก 2525–2567 · SRS ระบุแหล่งข้อมูล OAE และการเก็บไฟล์ต้นฉบับ/Staging แต่ตารางที่แนบยังไม่มี Resource ID หรือ URL ต้นทาง</p>
+</section>
+
+<section class="blk" style="--c:#d93025">
+  <h2><span class="n">3</span>ER Diagram &amp; Relational Schema</h2>
+  <div class="er">
+    <div class="e"><strong>units</strong><span class="pk">unit_id PK</span>, unit_name</div>
+    <div class="e"><strong>items</strong><span class="pk">item_id PK</span>, item_name, <span class="fk">unit_id FK</span></div>
+    <div class="e"><strong>commodities</strong><span class="pk">commodity_id PK</span>, commodity_name, subcom_name</div>
+    <div class="e"><strong>data_releases</strong><span class="pk">release_id PK</span>, data_date, data_date_th</div>
+    <div class="e w"><strong>locations</strong><span class="pk">location_id PK</span>, name_th, name_en, level, <span class="fk">parent_id FK</span> (self)</div>
+    <div class="e f"><strong>production_stats</strong><span class="pk">stat_id PK</span>, <span class="fk">location_id FK, commodity_id FK, item_id FK, release_id FK</span>, year, crop_year, value<br><i>UNIQUE (location_id, commodity_id, item_id, crop_year)</i></div>
+  </div>
+  <p class="sm">locations / commodities / items / data_releases → production_stats แบบ 1:N · units → items แบบ 1:N · locations อ้างอิงพื้นที่แม่ในตารางเดียวกัน · Logical grain: 1 ระเบียนต่อพื้นที่ + สินค้า + ตัวชี้วัด + ปีเพาะปลูก · การยืนยัน 3NF/BCNF ต้องพิจารณา Functional Dependencies เพิ่มเติม</p>
+</section>
+</div>
+<div class="col">
+<section class="blk" style="--c:#1a9a55">
+  <h2><span class="n">4</span>Extraction &amp; Validation</h2>
+  <div class="flow"><span class="chip">XLSX/CSV</span><span class="ar">→</span><span class="chip">Staging</span><span class="ar">→</span><span class="chip">ตรวจคุณภาพ</span><span class="ar">→</span><span class="chip">เชื่อมรหัสอ้างอิง</span><span class="ar">→</span><span class="chip">บันทึก production_stats</span></div>
+  <table>
+    <tr><th>Check</th><th class="r">ผล</th></tr>
+    <tr><td>V1 value ติดลบ</td><td class="r ok">0 แถว</td></tr>
+    <tr><td>V2 value เป็น NULL</td><td class="r ok">0 แถว</td></tr>
+    <tr><td>V3 ซ้ำตาม Logical key</td><td class="r ok">0 กลุ่ม</td></tr>
+    <tr><td>V4 value เท่ากับ 0 (เก็บแยกจาก NULL)</td><td class="r">362 แถว</td></tr>
+    <tr><td>V5 Yield ต่างจากสูตรเกิน 1 กก./ไร่</td><td class="r rv">1 / 1,628 กลุ่ม</td></tr>
+  </table>
+  <div class="cal w"><b>BR-06:</b> Yield = (ผลผลิต × 1,000) ÷ เนื้อที่ให้ผล · จันทบุรี ปี 2544 รายงาน 872 เทียบค่าคำนวณ 873.077 (ต่าง ≈ 1.077 กก./ไร่)</div>
+  <p class="sm">ไม่พบ NULL ในแถวที่มี ไม่ได้แปลว่าครบทุกคู่พื้นที่–ปี ต้องตรวจ Missing combinations แยก และยังไม่ได้ยืนยันที่มาของค่า 0 ทุกแถวกับไฟล์ต้นทาง</p>
+</section>
+
+<section class="blk" style="--c:#6d3fe0">
+  <h2><span class="n">5</span>Key Query: แนวโน้มรายพื้นที่</h2>
+<pre><span class="k">SELECT</span> ps.crop_year <span class="k">AS</span> year,
+  <span class="k">MAX</span>(<span class="k">CASE WHEN</span> ps.item_id = <span class="v">1</span> <span class="k">THEN</span> ps.value <span class="k">END</span>) <span class="k">AS</span> planted,
+  <span class="k">MAX</span>(<span class="k">CASE WHEN</span> ps.item_id = <span class="v">2</span> <span class="k">THEN</span> ps.value <span class="k">END</span>) <span class="k">AS</span> harvested,
+  <span class="k">MAX</span>(<span class="k">CASE WHEN</span> ps.item_id = <span class="v">3</span> <span class="k">THEN</span> ps.value <span class="k">END</span>) <span class="k">AS</span> production,
+  <span class="k">MAX</span>(<span class="k">CASE WHEN</span> ps.item_id = <span class="v">4</span> <span class="k">THEN</span> ps.value <span class="k">END</span>) <span class="k">AS</span> yield,
+  <span class="k">MAX</span>(dr.data_date_th) <span class="k">AS</span> release_th
+<span class="k">FROM</span> production_stats ps
+<span class="k">LEFT JOIN</span> data_releases dr <span class="k">ON</span> dr.release_id = ps.release_id
+<span class="k">WHERE</span> ps.location_id = <span class="s">:location_id</span>
+<span class="k">GROUP BY</span> ps.crop_year <span class="k">ORDER BY</span> ps.crop_year;</pre>
+  <p class="sm">FR-05 / 07 · ตัวอย่างผลลัพธ์: ประเทศ (location_id = 1) ปีเพาะปลูก 2567</p>
+  <div class="res">
+    <div><strong>6,751,370</strong><span>เนื้อที่ยืนต้น · ไร่</span></div>
+    <div><strong>6,323,317</strong><span>เนื้อที่ให้ผล · ไร่</span></div>
+    <div><strong>18,551,998</strong><span>ผลผลิต · ตัน</span></div>
+    <div><strong>2,934</strong><span>ผลผลิตต่อเนื้อที่ให้ผล · กก./ไร่</span></div>
+  </div>
+  <p class="sm">ชุดปัจจุบันมีสินค้าเดียว หากเพิ่มสินค้าต้องกรอง commodity_id ด้วย · MAX(data_date_th) เลือกข้อความสูงสุด ไม่รับประกันว่าเป็นวันที่เผยแพร่ล่าสุด</p>
+</section>
+</div>
+<div class="col">
+<section class="blk" style="--c:#e8710a">
+  <h2><span class="n">6</span>Index &amp; Transaction</h2>
+  <span class="tg">ข้อเสนอการออกแบบ · ยังไม่มีผล EXPLAIN แนบ</span>
+<pre><span class="c">-- กันข้อมูลซ้ำ และเร่ง trend()</span>
+<span class="k">CREATE UNIQUE INDEX</span> ux_stats_key <span class="k">ON</span> production_stats
+  (location_id, commodity_id, item_id, crop_year);
+<span class="c">-- ranking() / regions()</span>
+<span class="k">CREATE INDEX</span> ix_rank <span class="k">ON</span> production_stats (crop_year, item_id, value);
+<span class="k">CREATE INDEX</span> ix_reg  <span class="k">ON</span> production_stats (item_id, crop_year, location_id);
+
+<span class="c">-- นำเข้าจาก Staging: สำเร็จทั้งชุด หรือยกเลิกทั้งชุด</span>
+<span class="k">BEGIN</span>;
+  <span class="k">INSERT</span> ... <span class="k">ON DUPLICATE KEY UPDATE</span> ...;  <span class="c">-- UPSERT (BR-12)</span>
+<span class="k">COMMIT</span>;   <span class="c">-- สำเร็จ</span>
+<span class="k">ROLLBACK</span>; <span class="c">-- เมื่อผิดพลาด</span></pre>
+  <ul>
+    <li>ใช้ EXPLAIN เปรียบเทียบแผนก่อน–หลังเพิ่ม Index (เวลา และจำนวนแถวที่อ่าน)</li>
+    <li>พิจารณาความซ้ำซ้อนกับ Index เดิมก่อนสร้างเพิ่ม</li>
+    <li>ทดสอบนำเข้าซ้ำ ผลลัพธ์ต้องไม่เพิ่มระเบียนซ้ำ</li>
+  </ul>
+  <p class="sm">โค้ดที่แนบเป็นฝั่งอ่านข้อมูล จึงยังไม่ใช่หลักฐานว่า Transaction, Rollback หรือประสิทธิภาพ Index ผ่านการทดสอบแล้ว</p>
+</section>
+
+<section class="blk" style="--c:#0e9468">
+  <h2><span class="n">7</span>Verification (Traceability)</h2>
+  <table>
+    <tr><th>Req.</th><th>ทดสอบ</th><th class="r">ผลลัพธ์</th></tr>
+    <tr><td>BR-01</td><td>ไม่มี value &lt; 0</td><td class="r ok">ผ่าน · 0 แถว</td></tr>
+    <tr><td>BR-04</td><td>ไม่ซ้ำตาม Logical key</td><td class="r ok">ผ่าน · 0 กลุ่ม</td></tr>
+    <tr><td>BR-06</td><td>Yield ตามสูตร</td><td class="r rv">เกินเกณฑ์ 1 กลุ่ม</td></tr>
+    <tr><td>FR-05/07</td><td>trend(): 4 ตัวชี้วัดรายปี</td><td class="r">มีโค้ดรองรับ</td></tr>
+    <tr><td>FR-06/08</td><td>ranking(): Rank + prev_value</td><td class="r">มีบางส่วน*</td></tr>
+    <tr><td>FR-10</td><td>meta(): Releases + Counts</td><td class="r">รองรับบางส่วน**</td></tr>
+    <tr><td>FR-09</td><td>ผลรวมลูกเทียบพื้นที่แม่</td><td class="r pd">ยังไม่ตรวจ</td></tr>
+    <tr><td>FR-14</td><td>รายงานคู่พื้นที่–ปีที่ขาด</td><td class="r pd">ยังไม่ตรวจ</td></tr>
+  </table>
+  <p class="sm">* ส่งค่าปีก่อน แต่ยังไม่คำนวณ YoY % ใน SQL · ต้องจัดการกรณีค่าปีก่อนเป็น 0 หรือ NULL<br>** มีวันที่เผยแพร่และจำนวนแถว แต่ยังไม่พบ Resource ID/ลิงก์ต้นทาง</p>
+  <div class="cal"><b>กฎใน ranking():</b> item_id = 4 (Yield) เป็นอัตราส่วน จึงคืน national_share เป็น NULL · ตัวชี้วัดอื่นหารด้วยยอดประเทศ และใช้ NULLIF กันหารด้วยศูนย์</div>
+</section>
+
+<section class="blk" style="--c:#d6246e">
+  <h2><span class="n">8</span>Findings &amp; Conclusion</h2>
+  <div class="stats">
+    <div><strong>18.55 ล้านตัน</strong><span>ผลผลิตทั้งประเทศ ปี 2567</span></div>
+    <div><strong>2,934</strong><span>Yield ที่รายงาน · กก./ไร่</span></div>
+    <div><strong>6,960</strong><span>ระเบียนใน production_stats</span></div>
+  </div>
+  <ul>
+    <li>ฐานข้อมูล 6 ตาราง พื้นที่อ้างอิง 81 รายการ ข้อมูลปีเพาะปลูก 2525–2567</li>
+    <li>ไม่พบค่าติดลบหรือข้อมูลซ้ำตาม Logical key แต่พบ Yield เกินเกณฑ์คลาดเคลื่อน 1 กลุ่ม</li>
+    <li>Yield ห้ามรวมตรง ๆ หรือคำนวณสัดส่วน ถ้าสรุปจากพื้นที่ย่อยให้ใช้ ผลผลิตรวม ÷ พื้นที่ให้ผลรวม</li>
+  </ul>
+  <div class="cal w"><b>ต้องปิดก่อนสรุปว่าระบบผ่านครบ:</b> ตรวจผลรวมจังหวัด–ภาค–ประเทศ · ตรวจชุดข้อมูลที่ขาด · ทดสอบ Import/Export และ Rollback · แนบผล EXPLAIN</div>
+  <p class="sm"><b>ข้อจำกัด:</b> trend()/ranking()/regions() ยังไม่กรองสินค้า · national_share ไม่ใช่การตรวจผลรวมพื้นที่แม่ · FIELD() ใน locations เป็นรูปแบบของ MySQL ต้องปรับเมื่อใช้ฐานข้อมูลอื่น</p>
+</section>
+</div>
+</div>
+<div class="foot">หลักฐาน: SRS · CSV 6 ไฟล์ · โค้ด Query Dashboard ที่แนบ · ผลตรวจข้อมูลจริง ≠ ผลทดสอบระบบครบทุก Requirement</div>
+</main>
+<script>
+(function(){
+var R=1.26,el=document.querySelector('.sheet'),st=document.createElement('style'),W=1400;
+document.head.appendChild(st);
+function layout(){
+  el.style.zoom=1;el.style.minHeight='0';
+  var w,h;
+  for(w=1100;w<=1900;w+=20){el.style.width=w+'px';h=el.getBoundingClientRect().height;if(h<=R*w)break;}
+  W=w;var H=Math.max(Math.round(R*w),Math.ceil(h));
+  el.style.minHeight=H+'px';
+  st.textContent='@page{size:'+W+'px '+H+'px;margin:0}@media print{html,body{height:'+H+'px;overflow:hidden}}';
+  scale();
+}
+function scale(){el.style.zoom=Math.min(1,(window.innerWidth-24)/W);}
+window.addEventListener('load',layout);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(layout);
+window.addEventListener('resize',scale);
+window.addEventListener('beforeprint',function(){el.style.zoom=1;});
+window.addEventListener('afterprint',scale);
+})();
+</script>
+</body>
+</html>

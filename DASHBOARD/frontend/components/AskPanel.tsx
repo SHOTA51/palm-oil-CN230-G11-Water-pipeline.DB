@@ -89,7 +89,9 @@ export function AskPanel({ onOpen }: Props) {
       : status?.status === "embedding"
         ? "กำลังเตรียมค้นหาเชิงความหมาย (ใช้ค้นหาด้วยคำไปก่อน)…"
         : status?.semantic
-        ? `ค้นหาเชิงความหมาย · ${status.embedModel}`
+        ? status.neo4j?.ready
+          ? `ค้นหาเชิงความหมายด้วย Neo4j · ${status.embedModel}`
+          : `ค้นหาเชิงความหมาย · ${status.embedModel}`
         : "ค้นหาด้วยคำ (ยังไม่ได้เชื่อม Gemini)";
 
   return (

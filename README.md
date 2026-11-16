@@ -93,3 +93,20 @@
 ## เตรียมต่อสำหรับเว็บ
 
 ฐานข้อมูลมี hierarchy พื้นที่สำหรับ drill-down และคอลัมน์ `name_en` สำหรับค้นหาภาษาอังกฤษ (ปัจจุบันยังไม่มีการเติมชื่ออังกฤษ) ขั้นถัดไปคือกำหนด query/view ตามตัวกรอง Dashboard ที่ต้องการ และเพิ่ม index จากรูปแบบการค้นหาจริงของเว็บ โดยยังไม่ควรสร้างสรุปที่บวกจังหวัด ภาค และประเทศรวมกัน เพราะเป็นระดับข้อมูลซ้อนกัน
+
+## Neo4j Semantic Search
+
+Dashboard เพิ่ม Neo4j เป็น serving layer สำหรับ Semantic Search โดย MySQL ยังคงเป็น source of truth:
+
+- `locations`, `items`, `units`, `commodities`, `data_releases` และ `production_stats` ยังคงอ่านจาก MySQL
+- FastAPI สร้างข้อความค้นหาและ embedding จากข้อมูล MySQL แล้ว sync เป็น `SearchChunk` ใน Neo4j
+- Neo4j ใช้ Vector Index `search_chunk_embedding` และค่า dimension ต้องตรงกับ `GEMINI_EMBED_DIM` (ค่าเริ่มต้น 768)
+- หาก Neo4j หรือ Gemini ยังไม่พร้อม ระบบจะ fallback เป็น keyword/local retrieval เดิม ไม่ทำให้ Dashboard หลักหยุดทำงาน
+
+เริ่มบริการจากโฟลเดอร์ `DASHBOARD`:
+
+```powershell
+docker compose up -d
+```
+
+ตรวจ Neo4j Browser ที่ `http://localhost:7474` ด้วยค่าจาก `.env` และตรวจสถานะ serving layer ได้ที่ `http://localhost:8000/api/rag/status` หลัง FastAPI สร้าง embedding เสร็จแล้ว

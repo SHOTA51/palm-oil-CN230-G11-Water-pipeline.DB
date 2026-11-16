@@ -21,6 +21,7 @@ from pathlib import Path
 import numpy as np
 
 from ..db import engine
+from .. import neo4j_store
 from . import gemini
 from .documents import Chunk, build_chunks
 
@@ -149,6 +150,8 @@ class RagIndex:
             self.vectors = vectors
             self.embedding_error = error
             self.status = "semantic" if vectors is not None else "keyword"
+        if vectors is not None:
+            neo4j_store.sync(chunks, vectors)
         log.info("rag index ready: %d chunks, mode=%s", len(chunks), self.status)
 
     def _load_cache(self) -> dict[str, np.ndarray]:
@@ -190,6 +193,7 @@ class RagIndex:
             "chatModels": gemini.CHAT_MODELS if gemini.enabled() else [],
             "geminiConfigured": gemini.enabled(),
             "error": self.embedding_error,
+            "neo4j": neo4j_store.info(),
         }
 
     def search(self, q: str, k: int = 8) -> tuple[list[dict], str]:
@@ -205,7 +209,11 @@ class RagIndex:
         if vectors is not None:
             try:
                 qv = np.asarray(gemini.embed([q], "RETRIEVAL_QUERY")[0], dtype=np.float32)
-                cos = vectors @ qv
+                graph_hits = neo4j_store.search(qv, max(k * 4, 20))
+                graph_scores = {hit["id"]: hit["score"] for hit in graph_hits}
+                cos = np.array([graph_scores.get(chunk.id, -1.0) for chunk in chunks])
+                if not graph_hits:
+                    cos = vectors @ qv
                 lo, hi = float(cos.min()), float(cos.max())
                 sem = (cos - lo) / (hi - lo) if hi > lo else cos
                 score = 0.65 * sem + 0.35 * lex

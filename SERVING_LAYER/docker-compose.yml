@@ -1,0 +1,21 @@
+# Serving Layer (Section 6.x): Neo4j 5 graph + vector index.
+# The RDBMS (MySQL, DATA_SET/docker-compose.yaml) stays the Source of Truth;
+# this container is rebuildable from its CSV export at any time.
+services:
+  neo4j:
+    image: neo4j:5.26-community   # 5.x LTS; vector indexes are available in Community
+    container_name: palm-neo4j
+    environment:
+      # Dev-only password. Change it via SERVING_LAYER/.env (NEO4J_PASSWORD=...).
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-palmoil-dev}
+      NEO4J_server_memory_heap_max__size: 1G
+      NEO4J_server_memory_pagecache_size: 512M
+    ports:
+      - "7474:7474"   # Neo4j Browser  -> http://localhost:7474
+      - "7687:7687"   # Bolt (Python driver)
+    volumes:
+      - ./import:/import          # LOAD CSV reads file:///<name>.csv from here
+      - neo4j_data:/data
+
+volumes:
+  neo4j_data:

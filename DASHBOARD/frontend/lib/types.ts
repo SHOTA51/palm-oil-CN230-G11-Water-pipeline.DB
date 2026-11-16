@@ -98,3 +98,53 @@ export interface RagStatus {
   geminiConfigured: boolean;
   error: string | null;
 }
+
+/* ---------- Serving Layer (Neo4j graph + vector search) ---------- */
+export interface GraphStatus {
+  enabled: boolean;
+  error: string | null;
+  exported_at?: string | null;
+  source?: string | null;
+  locations?: number;
+  stats?: number;
+  embedded?: number;
+  model?: string | null;
+  embedded_at?: string | null;
+}
+
+export interface GraphLocationHit {
+  location_id: number;
+  location: string;
+  level: Level;
+  score: number;
+  description: string;
+}
+
+export interface GraphItemHit {
+  item_id: number;
+  item: string;
+  score: number;
+}
+
+export interface GraphSearchResponse {
+  query: string;
+  locations: GraphLocationHit[];
+  items: GraphItemHit[];
+}
+
+export interface GraphHopRow {
+  location: string;
+  part_of: string | null;
+  item: string;
+  crop_year: number;
+  value: number | null;
+  unit: string;
+  stat_id: number;
+  release_date: string | null;
+  score: number;
+}
+
+export interface GraphHopResponse {
+  query: string;
+  rows: GraphHopRow[];
+}

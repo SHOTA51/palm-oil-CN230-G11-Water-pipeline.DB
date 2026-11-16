@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 const LINKS = [
   { href: "/", label: "แดชบอร์ด" },
   { href: "/normalization", label: "ขั้นตอน Normalization" },
+  { href: "/serving-layer", label: "กราฟ + Semantic Search" },
 ] as const;
 
 export function SiteNav() {

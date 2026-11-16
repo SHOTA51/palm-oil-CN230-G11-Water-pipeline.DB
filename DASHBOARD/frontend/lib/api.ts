@@ -1,4 +1,16 @@
-import type { AskResponse, Meta, RagStatus, RankingRow, RegionRow, SearchResponse, TrendRow, WithSql } from "./types";
+import type {
+  AskResponse,
+  GraphHopResponse,
+  GraphSearchResponse,
+  GraphStatus,
+  Meta,
+  RagStatus,
+  RankingRow,
+  RegionRow,
+  SearchResponse,
+  TrendRow,
+  WithSql,
+} from "./types";
 
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
 
@@ -41,4 +53,7 @@ export const api = {
   ragStatus: () => get<RagStatus>("/api/rag/status"),
   search: (q: string, k = 8) => get<SearchResponse>("/api/search", { q, k }, 20000),
   ask: (question: string) => request<AskResponse>("/api/ask", {}, 100000, { question }),
+  graphStatus: () => get<GraphStatus>("/api/graph/status", {}, 20000),
+  graphSearch: (q: string) => get<GraphSearchResponse>("/api/graph/search", { q }, 30000),
+  graphHop: (q: string) => get<GraphHopResponse>("/api/graph/hop", { q }, 30000),
 };

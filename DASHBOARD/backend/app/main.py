@@ -16,6 +16,7 @@ from sqlalchemy import text
 from . import queries
 from .db import engine
 from .rag.index import index
+from .serving import graph
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s %(message)s")
 
@@ -107,6 +108,32 @@ def search(request: Request, q: str = Query(..., min_length=1, max_length=300), 
     except RuntimeError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     return {"query": q, "mode": mode, "results": results}
+
+
+# ---------- Serving Layer: Neo4j graph + vector index (report Section 6.x) ----------
+
+
+@app.get("/api/graph/status")
+def graph_status():
+    return graph.status()
+
+
+@app.get("/api/graph/search")
+def graph_search(request: Request, q: str = Query(..., min_length=2, max_length=300), k: int = Query(5, ge=1, le=10)):
+    _check_rate(request)
+    try:
+        return {"query": q, **graph.search(q, k)}
+    except graph.GraphUnavailable as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+
+@app.get("/api/graph/hop")
+def graph_hop(request: Request, q: str = Query(..., min_length=2, max_length=300), k: int = Query(5, ge=1, le=10)):
+    _check_rate(request)
+    try:
+        return {"query": q, "rows": graph.hop(q, k)}
+    except graph.GraphUnavailable as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
 
 
 class AskBody(BaseModel):
